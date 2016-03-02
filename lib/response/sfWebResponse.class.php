@@ -406,7 +406,14 @@ class sfWebResponse extends sfResponse
    */
   protected function normalizeHeaderName($name)
   {
-    return preg_replace('/\-(.)/e', "'-'.strtoupper('\\1')", strtr(ucfirst(strtolower($name)), '_', '-'));
+    return preg_replace_callback(
+      '/\-(.)/', 
+      create_function('$matches', 'return \'-\'.strtoupper($matches[1]);'), 
+      strtr(ucfirst(strtolower($name)), '_', '-')
+    );
+
+    // Lecturio: fix obsolete preg_replace for PHP 5.5.9 compatibility
+    // return preg_replace('/\-(.)/e', "'-'.strtoupper('\\1')", strtr(ucfirst(strtolower($name)), '_', '-'));
   }
 
   /**
